@@ -8,6 +8,7 @@ import TripHistory from './components/TripHistory';
 import ChargingHistory from './components/ChargingHistory';
 import Settings from './components/Settings';
 import Layout from './components/Layout';
+import FirebaseTest from './components/FirebaseTest';
 
 function AppContent() {
   const { scooterCode, appData, loading, updateAppData } = useAuth();
@@ -49,7 +50,10 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
-          <AppContent />
+          <Routes>
+            <Route path="/test-firebase" element={<FirebaseTest />} />
+            <Route path="*" element={<AppContent />} />
+          </Routes>
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>
