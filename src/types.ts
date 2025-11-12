@@ -5,6 +5,8 @@ export interface AppSettings {
   criticalRangeThreshold: number;
   scooterName: string;
   scooterModel: string;
+  notificationsEnabled?: boolean;
+  darkMode?: boolean;
 }
 
 export interface OdometerEntry {

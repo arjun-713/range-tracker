@@ -64,11 +64,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const subscribeToScooterData = (code: string) => {
+    console.log('Subscribing to scooter data:', code);
     const scooterRef = ref(database, `scooters/${code}`);
     
     onValue(scooterRef, (snapshot) => {
+      console.log('Received data from Firebase:', snapshot.exists());
       const data = snapshot.val();
       if (data) {
+        console.log('Data exists, parsing...');
         // Convert timestamps back to Date objects
         const parsedData = {
           ...data,
@@ -82,11 +85,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           })),
         };
         setAppData(parsedData);
+        console.log('App data set successfully');
       } else {
+        console.log('No data exists, initializing...');
         // Initialize new scooter data
-        set(scooterRef, defaultData);
-        setAppData(defaultData);
+        set(scooterRef, defaultData).then(() => {
+          console.log('Default data written to Firebase');
+          setAppData(defaultData);
+        }).catch((error) => {
+          console.error('Error writing default data:', error);
+        });
       }
+      setLoading(false);
+    }, (error) => {
+      console.error('Error reading from Firebase:', error);
       setLoading(false);
     });
 
@@ -96,20 +108,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginWithCode = async (code: string) => {
     try {
       setLoading(true);
+      console.log('Attempting to login with code:', code);
       
-      // Sign in anonymously
-      if (!user) {
-        await signInAnonymously(auth);
+      // Sign in anonymously first
+      let currentUser = user;
+      if (!currentUser) {
+        console.log('Signing in anonymously...');
+        const result = await signInAnonymously(auth);
+        currentUser = result.user;
+        console.log('Signed in successfully:', currentUser.uid);
       }
 
       // Store the scooter code
       localStorage.setItem('scooter_code', code);
       setScooterCode(code);
+      console.log('Scooter code stored:', code);
 
       // Subscribe to scooter data
       subscribeToScooterData(code);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
       setLoading(false);
       throw error;
     }

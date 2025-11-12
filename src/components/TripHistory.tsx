@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AppData } from '../types';
 import { format, startOfDay, startOfWeek, startOfMonth } from 'date-fns';
-import { Calendar, MapPin, Download } from 'lucide-react';
+import { MapPin, Download } from 'lucide-react';
 import { exportToCSV } from '../utils/calculations';
 
 interface TripHistoryProps {
