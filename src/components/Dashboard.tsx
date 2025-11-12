@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { AppData } from '../types';
 import { getRangeStatus } from '../utils/calculations';
 import { requestNotificationPermission, checkAndNotifyLowRange } from '../utils/notifications';
-import { AlertTriangle, Bell, BellOff } from 'lucide-react';
+import { AlertTriangle, Bell, BellOff, Mic, MicOff } from 'lucide-react';
 import { startOfDay } from 'date-fns';
 import UpdateOdometerModal from './UpdateOdometerModal';
 import AddChargeModal from './AddChargeModal';
 import RangePredictorModal from './RangePredictorModal';
+import VoiceCommandModal from './VoiceCommandModal';
 
 interface DashboardProps {
   appData: AppData;
@@ -19,6 +20,7 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
   const [showPredictorModal, setShowPredictorModal] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [showVoiceModal, setShowVoiceModal] = useState(false);
   const lastNotificationRangeRef = useRef<number | null>(null);
 
   const { currentRange, currentOdometer, settings, odometerEntries } = appData;
@@ -75,7 +77,13 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
     <div className="min-h-screen bg-white dark:bg-background-dark">
       {/* Header */}
       <div className="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between">
-        <div className="flex w-12 shrink-0"></div>
+        <button
+          onClick={() => setShowVoiceModal(true)}
+          className="flex items-center justify-center h-12 bg-transparent p-0"
+          title="Voice command"
+        >
+          <Mic className="text-[#007AFF]" size={24} />
+        </button>
         <div className="flex-1"></div>
         <button
           onClick={handleEnableNotifications}
@@ -214,6 +222,14 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
         <RangePredictorModal
           currentRange={currentRange}
           onClose={() => setShowPredictorModal(false)}
+        />
+      )}
+
+      {showVoiceModal && (
+        <VoiceCommandModal
+          appData={appData}
+          updateData={updateData}
+          onClose={() => setShowVoiceModal(false)}
         />
       )}
     </div>

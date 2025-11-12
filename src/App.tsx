@@ -37,7 +37,7 @@ function AppContent() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Dashboard appData={appData} updateData={updateAppData} />} />
         <Route path="trips" element={<TripHistory appData={appData} />} />
-        <Route path="charging" element={<ChargingHistory appData={appData} />} />
+        <Route path="charging" element={<ChargingHistory appData={appData} updateData={updateAppData} />} />
         <Route path="settings" element={<Settings appData={appData} updateData={updateAppData} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
