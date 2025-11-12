@@ -74,9 +74,9 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark">
+    <div className="min-h-screen bg-white dark:bg-background-dark">
       {/* Header */}
-      <div className="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between">
+      <div className="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between">
         <div className="flex w-12 shrink-0"></div>
         <div className="flex-1"></div>
         <button
@@ -84,17 +84,17 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
           className="flex items-center justify-center h-12 bg-transparent p-0"
         >
           {notificationsEnabled ? (
-            <Bell className="text-text-light dark:text-text-dark" size={24} />
+            <Bell className="text-text-primary-light dark:text-text-primary-dark" size={24} />
           ) : (
-            <BellOff className="text-text-light dark:text-text-dark opacity-50" size={24} />
+            <BellOff className="text-text-secondary-light dark:text-text-secondary-dark" size={24} />
           )}
         </button>
       </div>
 
       {/* Scooter Icon */}
-      <div className="flex w-full grow flex-col items-center justify-center bg-background-light dark:bg-background-dark py-3">
+      <div className="flex w-full grow flex-col items-center justify-center bg-white dark:bg-background-dark py-3">
         <div className="flex justify-center items-center py-8">
-          <svg width="96" height="96" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text-light dark:text-text-dark">
+          <svg width="96" height="96" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text-primary-light dark:text-text-primary-dark">
             <path d="M40 70 L40 50 L50 40 L70 40 L80 50 L80 70" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
             <circle cx="35" cy="85" r="12" stroke="currentColor" strokeWidth="3" fill="none"/>
             <circle cx="35" cy="85" r="4" fill="currentColor"/>
@@ -109,14 +109,14 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
       </div>
 
       {/* Range Display */}
-      <h1 className="text-text-light dark:text-text-dark tracking-tight text-5xl font-bold leading-tight px-4 text-center pb-3 pt-2">
+      <h1 className="text-text-primary-light dark:text-text-primary-dark tracking-tight text-5xl font-bold leading-tight px-4 text-center pb-3 pt-2">
         {currentRange.toFixed(1)} km remaining
       </h1>
 
       {/* Progress Bar */}
       <div className="flex flex-col gap-3 p-4 pt-6">
         <div className="bg-border-light dark:bg-border-dark h-1">
-          <div className="h-1 bg-primary" style={{ width: `${rangePercentage}%` }}></div>
+          <div className="h-1 bg-accent" style={{ width: `${rangePercentage}%` }}></div>
         </div>
       </div>
 
@@ -136,13 +136,13 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
       <div className="grid grid-cols-2 gap-4 px-4 py-4 relative">
         <button
           onClick={() => setShowOdometerModal(true)}
-          className="flex w-full items-center justify-center h-12 text-background-light dark:text-text-dark bg-primary text-sm font-bold leading-normal tracking-wide"
+          className="flex w-full items-center justify-center h-12 text-white bg-accent text-sm font-bold leading-normal tracking-wide"
         >
           UPDATE ODOMETER
         </button>
         <button
           onClick={() => setShowChargeModal(true)}
-          className="flex w-full items-center justify-center h-12 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-primary text-sm font-bold leading-normal tracking-wide"
+          className="flex w-full items-center justify-center h-12 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark text-accent text-sm font-bold leading-normal tracking-wide"
         >
           ADD CHARGE
         </button>
@@ -161,34 +161,34 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
       <div className="p-4 mt-4">
         <div className="grid grid-cols-2 border-t border-l border-border-light dark:border-border-dark">
           <div className="flex flex-col items-center justify-center p-6 border-b border-r border-border-light dark:border-border-dark">
-            <p className="text-text-light dark:text-text-dark text-2xl font-bold tracking-tight">
+            <p className="text-text-primary-light dark:text-text-primary-dark text-2xl font-bold tracking-tight">
               {todayDistance.toFixed(1)} km
             </p>
-            <p className="text-text-light/70 dark:text-text-dark/70 text-xs font-normal tracking-widest uppercase mt-1">
+            <p className="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal tracking-widest uppercase mt-1">
               TRIP DISTANCE
             </p>
           </div>
           <div className="flex flex-col items-center justify-center p-6 border-b border-r border-border-light dark:border-border-dark">
-            <p className="text-text-light dark:text-text-dark text-2xl font-bold tracking-tight">
+            <p className="text-text-primary-light dark:text-text-primary-dark text-2xl font-bold tracking-tight">
               {currentOdometer.toFixed(1)} km
             </p>
-            <p className="text-text-light/70 dark:text-text-dark/70 text-xs font-normal tracking-widest uppercase mt-1">
+            <p className="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal tracking-widest uppercase mt-1">
               ODOMETER
             </p>
           </div>
           <div className="flex flex-col items-center justify-center p-6 border-b border-r border-border-light dark:border-border-dark">
-            <p className="text-text-light dark:text-text-dark text-2xl font-bold tracking-tight">
+            <p className="text-text-primary-light dark:text-text-primary-dark text-2xl font-bold tracking-tight">
               {tripsToday}
             </p>
-            <p className="text-text-light/70 dark:text-text-dark/70 text-xs font-normal tracking-widest uppercase mt-1">
+            <p className="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal tracking-widest uppercase mt-1">
               TRIPS TODAY
             </p>
           </div>
           <div className="flex flex-col items-center justify-center p-6 border-b border-r border-border-light dark:border-border-dark">
-            <p className="text-text-light dark:text-text-dark text-2xl font-bold tracking-tight">
+            <p className="text-text-primary-light dark:text-text-primary-dark text-2xl font-bold tracking-tight">
               {rangePercentage.toFixed(0)}%
             </p>
-            <p className="text-text-light/70 dark:text-text-dark/70 text-xs font-normal tracking-widest uppercase mt-1">
+            <p className="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal tracking-widest uppercase mt-1">
               BATTERY
             </p>
           </div>
