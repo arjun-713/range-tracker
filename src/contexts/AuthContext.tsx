@@ -158,7 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const timestamp = new Date().toLocaleTimeString();
 
     // Clean data: remove undefined values (Firebase doesn't allow them)
-    const cleanData = JSON.parse(JSON.stringify(newData, (key, value) => {
+    const cleanData = JSON.parse(JSON.stringify(newData, (_key, value) => {
       return value === undefined ? null : value;
     }));
 

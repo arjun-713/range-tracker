@@ -36,7 +36,7 @@ export default function UpdateOdometerModal({ appData, updateData, onClose }: Up
       distanceTraveled,
       rangeBeforeTrip: appData.currentRange,
       rangeAfterTrip: newRange,
-      notes: notes.trim() || undefined,
+      notes: notes.trim() || '',
     };
 
     updateData({
