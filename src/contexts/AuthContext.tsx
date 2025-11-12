@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { auth, database } from '../firebase/config';
 import { signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
-import { ref, onValue, set, off } from 'firebase/database';
+import { ref, onValue, set } from 'firebase/database';
 import { AppData } from '../types';
 
 interface AuthContextType {
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     console.log('Setting up real-time listener for:', scooterCode);
     const scooterRef = ref(database, `scooters/${scooterCode}`);
-    
+
     const unsubscribe = onValue(scooterRef, (snapshot) => {
       console.log('Real-time update received:', snapshot.exists());
       const data = snapshot.val();
@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      
+
       // Check for stored scooter code
       const storedCode = localStorage.getItem('scooter_code');
       if (storedCode && user) {
@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       console.log('Attempting to login with code:', code);
-      
+
       // Sign in anonymously first
       let currentUser = user;
       if (!currentUser) {
