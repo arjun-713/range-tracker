@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { AppData } from '../types';
 import { getRangeStatus } from '../utils/calculations';
 import { requestNotificationPermission, checkAndNotifyLowRange } from '../utils/notifications';
-import { AlertTriangle, Bell, BellOff, Mic, MicOff } from 'lucide-react';
+import { AlertTriangle, Bell, BellOff, Mic } from 'lucide-react';
 import { startOfDay } from 'date-fns';
 import UpdateOdometerModal from './UpdateOdometerModal';
 import AddChargeModal from './AddChargeModal';

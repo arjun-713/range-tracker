@@ -51,6 +51,7 @@ export default function ChargingHistory({ appData, updateData }: ChargingHistory
       duration: duration,
       rangeBeforeCharge: appData.currentRange,
       rangeAfterCharge: newRange,
+      rangeAdded: rangeAdded,
     };
 
     updateData({
