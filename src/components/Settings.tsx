@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AppData } from '../types';
-import { Trash2, Info, LogOut, Copy, Check, Moon, Sun } from 'lucide-react';
+// Lucide icons removed - using text only
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -57,231 +57,262 @@ export default function Settings({ appData, updateData }: SettingsProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-4">
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Settings</h1>
+    <div className="relative flex h-auto min-h-screen w-full flex-col bg-white dark:bg-background-dark overflow-x-hidden">
+      {/* Header */}
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border-light dark:border-border-dark bg-white dark:bg-background-dark p-4">
+        <div className="flex size-12 shrink-0 items-center"></div>
+        <h2 className="flex-1 text-center text-lg font-bold leading-tight tracking-[-0.015em] text-text-primary-light dark:text-text-primary-dark">
+          Settings
+        </h2>
+        <div className="flex w-12 items-center justify-end"></div>
       </div>
 
-      <div className="max-w-md mx-auto px-4 mt-4 space-y-4">
-        {/* Theme Toggle */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Appearance</h2>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              {darkMode ? <Moon size={20} className="mr-3 text-ocean" /> : <Sun size={20} className="mr-3 text-primary" />}
-              <div>
-                <div className="font-medium text-gray-900 dark:text-white">Dark Mode</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {darkMode ? 'Enabled' : 'Disabled'}
-                </div>
-              </div>
+      <div className="flex-grow pb-24">
+        {/* Appearance */}
+        <h3 className="px-4 pb-2 pt-8 text-sm font-bold uppercase leading-tight tracking-[-0.015em] text-text-secondary-light dark:text-text-secondary-dark">
+          Appearance
+        </h3>
+        <div className="flex flex-col border-y border-border-light dark:border-border-dark">
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Dark Mode
+            </p>
+            <div className="shrink-0">
+              <label className="relative inline-flex cursor-pointer items-center">
+                <input
+                  className="peer sr-only"
+                  type="checkbox"
+                  checked={darkMode}
+                  onChange={toggleDarkMode}
+                />
+                <div className="peer h-7 w-12 rounded-full bg-gray-200 after:absolute after:start-[4px] after:top-[4px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+              </label>
             </div>
-            <button
-              onClick={toggleDarkMode}
-              className={`relative inline-flex h-8 w-14 items-center rounded-full transition ${
-                darkMode ? 'bg-ocean' : 'bg-gray-300'
-              }`}
-            >
-              <span
-                className={`inline-block h-6 w-6 transform rounded-full bg-white transition ${
-                  darkMode ? 'translate-x-7' : 'translate-x-1'
-                }`}
-              />
-            </button>
           </div>
         </div>
 
         {/* Scooter Code */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Scooter Code</h2>
-          
-          <div className="bg-ocean-lightest dark:bg-ocean-darkest/50 border border-ocean-light dark:border-ocean-dark rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Your Scooter Code</span>
-              <button
-                onClick={copyCode}
-                className="flex items-center text-sm text-primary dark:text-ocean-light hover:text-primary-dark dark:hover:text-ocean"
-              >
-                {codeCopied ? (
-                  <>
-                    <Check size={16} className="mr-1" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy size={16} className="mr-1" />
-                    Copy
-                  </>
-                )}
-              </button>
-            </div>
-            <div className="text-3xl font-mono font-bold text-gray-900 dark:text-white tracking-wider">
+        <h3 className="px-4 pb-2 pt-8 text-sm font-bold uppercase leading-tight tracking-[-0.015em] text-text-secondary-light dark:text-text-secondary-dark">
+          Scooter Code
+        </h3>
+        <div className="border-y border-border-light dark:border-border-dark bg-white dark:bg-background-dark">
+          <div className="p-4">
+            <p className="text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Your Scooter Code
+            </p>
+            <p className="mt-2 text-2xl font-bold tracking-widest text-text-primary-light dark:text-text-primary-dark">
               {scooterCode}
-            </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+            </p>
+            <p className="mt-2 text-sm font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
               Share this code to sync data across multiple devices
             </p>
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={copyCode}
+                className="flex h-10 flex-1 items-center justify-center border border-border-light dark:border-border-dark"
+              >
+                <span className="text-base font-medium text-primary">
+                  {codeCopied ? 'Copied!' : 'Copy'}
+                </span>
+              </button>
+              <button
+                onClick={() => setShowLogoutConfirm(true)}
+                className="flex h-10 flex-1 items-center justify-center border border-border-light dark:border-border-dark"
+              >
+                <span className="text-base font-medium text-primary">Switch Scooter</span>
+              </button>
+            </div>
           </div>
-
-          <button
-            onClick={() => setShowLogoutConfirm(true)}
-            className="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition flex items-center justify-center"
-          >
-            <LogOut size={20} className="mr-2" />
-            Switch Scooter
-          </button>
         </div>
 
         {/* Scooter Information */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Scooter Information</h2>
-          
-          <label className="block mb-4">
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Scooter Name</span>
-            <input
-              type="text"
-              value={settings.scooterName}
-              onChange={(e) => handleSettingChange('scooterName', e.target.value)}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-ocean focus:border-transparent"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Model</span>
-            <input
-              type="text"
-              value={settings.scooterModel}
-              onChange={(e) => handleSettingChange('scooterModel', e.target.value)}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-ocean focus:border-transparent"
-            />
-          </label>
-        </div>
-
-        {/* Range Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Range Settings</h2>
-          
-          <label className="block mb-4">
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Maximum Range (km)</span>
-            <input
-              type="number"
-              value={settings.maxRange}
-              onChange={(e) => handleSettingChange('maxRange', parseFloat(e.target.value))}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-ocean focus:border-transparent"
-              min="1"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Full Charge Duration (hours)</span>
-            <input
-              type="number"
-        
-        value={settings.fullChargeDuration}
-              onChange={(e) => handleSettingChange('fullChargeDuration', parseFloat(e.target.value))}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-ocean focus:border-transparent"
-              min="1"
-              step="0.5"
-            />
-          </label>
-        </div>
-
-        {/* Notifications */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Notifications</h2>
-          
-          <div className="mb-4 p-4 bg-ocean-lightest dark:bg-ocean-darkest/50 rounded-lg">
-            <div className="flex items-start">
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Browser Notifications</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Get notified when your scooter range drops below the alert threshold, even when the app is in the background.
-                </p>
-              </div>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
-              💡 Tip: Enable notifications from the bell icon on the home screen
+        <h3 className="px-4 pb-2 pt-8 text-sm font-bold uppercase leading-tight tracking-[-0.015em] text-text-secondary-light dark:text-text-secondary-dark">
+          Scooter Information
+        </h3>
+        <div className="flex flex-col border-y border-border-light dark:border-border-dark">
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between border-b border-border-light dark:border-border-dark">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Scooter Name
+            </p>
+            <p className="text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              {settings.scooterName}
+            </p>
+          </div>
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Model
+            </p>
+            <p className="text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              {settings.scooterModel}
             </p>
           </div>
         </div>
 
-        {/* Alert Thresholds */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Alert Thresholds</h2>
-          
-          <label className="block mb-4">
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Low Range Alert (km)</span>
+        {/* Range Settings */}
+        <h3 className="px-4 pb-2 pt-8 text-sm font-bold uppercase leading-tight tracking-[-0.015em] text-text-secondary-light dark:text-text-secondary-dark">
+          Range Settings
+        </h3>
+        <div className="flex flex-col border-y border-border-light dark:border-border-dark">
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between border-b border-border-light dark:border-border-dark">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Maximum Range (km)
+            </p>
             <input
+              className="border border-border-light dark:border-border-dark bg-white dark:bg-[#1a2732] text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-primary"
               type="number"
-              value={settings.lowRangeThreshold}
-              onChange={(e) => handleSettingChange('lowRangeThreshold', parseFloat(e.target.value))}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-ocean focus:border-transparent"
-              min="5"
+              value={settings.maxRange}
+              onChange={(e) => handleSettingChange('maxRange', parseFloat(e.target.value))}
             />
-            <span className="text-sm text-gray-500 dark:text-gray-400 mt-1 block">Yellow warning appears below this range</span>
-          </label>
+          </div>
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Full Charge Duration (hours)
+            </p>
+            <input
+              className="border border-border-light dark:border-border-dark bg-white dark:bg-[#1a2732] text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-primary"
+              type="number"
+              value={settings.fullChargeDuration}
+              onChange={(e) => handleSettingChange('fullChargeDuration', parseFloat(e.target.value))}
+              step="0.5"
+            />
+          </div>
+        </div>
 
-          <label className="block">
-            <span className="text-gray-700 dark:text-gray-300 font-medium">Critical Range Alert (km)</span>
-            <input
-              type="number"
-              value={settings.criticalRangeThreshold}
-              onChange={(e) => handleSettingChange('criticalRangeThreshold', parseFloat(e.target.value))}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-ocean focus:border-transparent"
-              min="0"
-            />
-            <span className="text-sm text-gray-500 dark:text-gray-400 mt-1 block">Red critical alert appears below this range</span>
-          </label>
+        {/* Notifications */}
+        <h3 className="px-4 pb-2 pt-8 text-sm font-bold uppercase leading-tight tracking-[-0.015em] text-text-secondary-light dark:text-text-secondary-dark">
+          Notifications
+        </h3>
+        <div className="flex flex-col border-y border-border-light dark:border-border-dark">
+          <div className="flex flex-col bg-white dark:bg-background-dark px-4 py-3 justify-between border-b border-border-light dark:border-border-dark">
+            <div className="flex items-center justify-between min-h-10">
+              <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+                Browser Notifications
+              </p>
+              <div className="shrink-0">
+                <label className="relative inline-flex cursor-pointer items-center">
+                  <input className="peer sr-only" type="checkbox" />
+                  <div className="peer h-7 w-12 rounded-full bg-gray-200 after:absolute after:start-[4px] after:top-[4px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+                </label>
+              </div>
+            </div>
+            <p className="mt-1 text-sm font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              Get notified when your scooter range drops below the alert threshold. Enable from the bell icon on the home screen.
+            </p>
+          </div>
+          <div className="flex flex-col bg-white dark:bg-background-dark px-4 py-3 justify-between border-b border-border-light dark:border-border-dark">
+            <div className="flex items-center justify-between min-h-10">
+              <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+                Low Range Alert (km)
+              </p>
+              <input
+                className="border border-border-light dark:border-border-dark bg-white dark:bg-[#1a2732] text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-primary"
+                type="number"
+                value={settings.lowRangeThreshold}
+                onChange={(e) => handleSettingChange('lowRangeThreshold', parseFloat(e.target.value))}
+              />
+            </div>
+            <p className="mt-1 text-sm font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              Yellow warning appears below this range
+            </p>
+          </div>
+          <div className="flex flex-col bg-white dark:bg-background-dark px-4 py-3 justify-between">
+            <div className="flex items-center justify-between min-h-10">
+              <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+                Critical Range Alert (km)
+              </p>
+              <input
+                className="border border-border-light dark:border-border-dark bg-white dark:bg-[#1a2732] text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-primary"
+                type="number"
+                value={settings.criticalRangeThreshold}
+                onChange={(e) => handleSettingChange('criticalRangeThreshold', parseFloat(e.target.value))}
+              />
+            </div>
+            <p className="mt-1 text-sm font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              Red critical alert appears below this range
+            </p>
+          </div>
         </div>
 
         {/* Data Management */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Data Management</h2>
-          
-          <button
-            onClick={() => setShowResetConfirm(true)}
-            className="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition flex items-center justify-center"
-          >
-            <Trash2 size={20} className="mr-2" />
-            Reset All Data
-          </button>
+        <h3 className="px-4 pb-2 pt-8 text-sm font-bold uppercase leading-tight tracking-[-0.015em] text-text-secondary-light dark:text-text-secondary-dark">
+          Data Management
+        </h3>
+        <div className="flex flex-col border-y border-border-light dark:border-border-dark">
+          <div className="bg-white dark:bg-background-dark px-4">
+            <button
+              onClick={() => setShowResetConfirm(true)}
+              className="flex h-14 w-full items-center justify-center"
+            >
+              <span className="text-base font-medium text-red-500">Reset All Data</span>
+            </button>
+          </div>
         </div>
 
         {/* About */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center">
-            <Info size={20} className="mr-2" />
-            About
-          </h2>
-          <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-            <p><strong>App:</strong> Scooter Range Tracker</p>
-            <p><strong>Version:</strong> 2.0.0</p>
-            <p><strong>Model:</strong> {settings.scooterModel}</p>
-            <p><strong>Scooter Code:</strong> {scooterCode}</p>
-            <p className="pt-2 text-xs">Track your electric scooter range and trips with ease. Data syncs across all devices.</p>
+        <h3 className="px-4 pb-2 pt-8 text-sm font-bold uppercase leading-tight tracking-[-0.015em] text-text-secondary-light dark:text-text-secondary-dark">
+          About
+        </h3>
+        <div className="flex flex-col border-y border-border-light dark:border-border-dark">
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between border-b border-border-light dark:border-border-dark">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              App
+            </p>
+            <p className="text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              Scooter Range Tracker
+            </p>
           </div>
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between border-b border-border-light dark:border-border-dark">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Version
+            </p>
+            <p className="text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              2.0.0
+            </p>
+          </div>
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between border-b border-border-light dark:border-border-dark">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Model
+            </p>
+            <p className="text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              {settings.scooterModel}
+            </p>
+          </div>
+          <div className="flex items-center gap-4 bg-white dark:bg-background-dark px-4 min-h-14 justify-between">
+            <p className="flex-1 truncate text-base font-normal leading-normal text-text-primary-light dark:text-text-primary-dark">
+              Scooter Code
+            </p>
+            <p className="text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+              {scooterCode}
+            </p>
+          </div>
+        </div>
+        <div className="px-4 pt-2">
+          <p className="text-sm font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
+            Track your electric scooter range and trips with ease. Data syncs across all devices.
+          </p>
         </div>
       </div>
 
-      {/* Switch Scooter Modal */}
+      {/* Modals */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Switch Scooter?</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <div className="bg-white dark:bg-background-dark rounded-lg max-w-md w-full p-6">
+            <h2 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">
+              Switch Scooter?
+            </h2>
+            <p className="text-text-secondary-light dark:text-text-secondary-dark mb-6">
               You'll be logged out and can enter a different scooter code. Your data will remain saved in the cloud.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                className="flex-1 bg-gray-200 dark:bg-gray-700 text-text-primary-light dark:text-text-primary-dark py-3 font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 bg-primary dark:bg-ocean text-white py-3 rounded-lg font-semibold hover:bg-primary-dark dark:hover:bg-ocean-dark transition"
+                className="flex-1 bg-primary text-white py-3 font-semibold"
               >
                 Switch
               </button>
@@ -290,24 +321,25 @@ export default function Settings({ appData, updateData }: SettingsProps) {
         </div>
       )}
 
-      {/* Reset Data Modal */}
       {showResetConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Reset All Data?</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <div className="bg-white dark:bg-background-dark rounded-lg max-w-md w-full p-6">
+            <h2 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">
+              Reset All Data?
+            </h2>
+            <p className="text-text-secondary-light dark:text-text-secondary-dark mb-6">
               This will delete all your trips, charging sessions, and settings. This action cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowResetConfirm(false)}
-                className="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                className="flex-1 bg-gray-200 dark:bg-gray-700 text-text-primary-light dark:text-text-primary-dark py-3 font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleReset}
-                className="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition"
+                className="flex-1 bg-red-500 text-white py-3 font-semibold"
               >
                 Reset
               </button>

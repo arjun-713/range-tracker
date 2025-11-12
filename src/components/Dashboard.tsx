@@ -136,13 +136,13 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
       <div className="grid grid-cols-2 gap-4 px-4 py-4 relative">
         <button
           onClick={() => setShowOdometerModal(true)}
-          className="flex w-full items-center justify-center h-12 text-white bg-accent text-sm font-bold leading-normal tracking-wide"
+          className="flex w-full items-center justify-center h-12 text-white bg-accent text-sm font-bold leading-normal tracking-wide shadow-sm"
         >
           UPDATE ODOMETER
         </button>
         <button
           onClick={() => setShowChargeModal(true)}
-          className="flex w-full items-center justify-center h-12 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark text-accent text-sm font-bold leading-normal tracking-wide"
+          className="flex w-full items-center justify-center h-12 bg-white dark:bg-background-dark border-2 border-border-light dark:border-border-dark text-accent text-sm font-bold leading-normal tracking-wide"
         >
           ADD CHARGE
         </button>
