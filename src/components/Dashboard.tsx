@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { AppData } from '../types';
-import { getRangeStatus, getRangeColor } from '../utils/calculations';
+import { getRangeStatus } from '../utils/calculations';
 import { requestNotificationPermission, checkAndNotifyLowRange } from '../utils/notifications';
 import { AlertTriangle, Bell, BellOff } from 'lucide-react';
-import { format, startOfDay, differenceInDays } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import UpdateOdometerModal from './UpdateOdometerModal';
 import AddChargeModal from './AddChargeModal';
 import RangePredictorModal from './RangePredictorModal';
@@ -21,9 +21,8 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [lastNotificationRange, setLastNotificationRange] = useState<number | null>(null);
 
-  const { currentRange, currentOdometer, settings, odometerEntries, chargeSessions } = appData;
+  const { currentRange, currentOdometer, settings, odometerEntries } = appData;
   const rangeStatus = getRangeStatus(currentRange, settings.lowRangeThreshold, settings.criticalRangeThreshold);
-  const rangeColor = getRangeColor(rangeStatus);
   const rangePercentage = (currentRange / settings.maxRange) * 100;
 
   const today = startOfDay(new Date());
@@ -31,17 +30,12 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
   const todayDistance = todayEntries.reduce((sum, e) => sum + e.distanceTraveled, 0);
   const tripsToday = todayEntries.length;
 
-  const lastCharge = chargeSessions.length > 0 ? chargeSessions[chargeSessions.length - 1] : null;
-  const daysSinceCharge = lastCharge ? differenceInDays(new Date(), lastCharge.timestamp) : null;
-
-  // Check notification permission on mount
   useEffect(() => {
     if ('Notification' in window) {
       setNotificationsEnabled(Notification.permission === 'granted');
     }
   }, []);
 
-  // Check for low range and send notifications
   useEffect(() => {
     if (notificationsEnabled) {
       const newLastNotificationRange = checkAndNotifyLowRange(
@@ -72,7 +66,6 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
     const granted = await requestNotificationPermission();
     setNotificationsEnabled(granted);
     if (granted) {
-      // Show a test notification
       const { showNotification } = await import('../utils/notifications');
       showNotification('Notifications Enabled! 🔔', {
         body: "You'll receive alerts when your scooter range is low.",
@@ -81,225 +74,128 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{settings.scooterName}</h1>
-          <button
-            onClick={handleEnableNotifications}
-            className={`p-2 rounded-lg transition ${
-              notificationsEnabled 
-                ? 'bg-ocean-lightest dark:bg-ocean-darkest text-ocean dark:text-ocean-light' 
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-            }`}
-            title={notificationsEnabled ? 'Notifications enabled' : 'Enable notifications'}
-          >
-            {notificationsEnabled ? <Bell size={20} /> : <BellOff size={20} />}
-          </button>
+    <div className="min-h-screen bg-background-light dark:bg-background-dark">
+      {/* Header */}
+      <div className="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between">
+        <div className="flex w-12 shrink-0"></div>
+        <div className="flex-1"></div>
+        <button
+          onClick={handleEnableNotifications}
+          className="flex items-center justify-center h-12 bg-transparent p-0"
+        >
+          {notificationsEnabled ? (
+            <Bell className="text-text-light dark:text-text-dark" size={24} />
+          ) : (
+            <BellOff className="text-text-light dark:text-text-dark opacity-50" size={24} />
+          )}
+        </button>
+      </div>
+
+      {/* Scooter Icon */}
+      <div className="flex w-full grow flex-col items-center justify-center bg-background-light dark:bg-background-dark py-3">
+        <div className="flex justify-center items-center py-8">
+          <svg width="96" height="96" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text-light dark:text-text-dark">
+            <path d="M40 70 L40 50 L50 40 L70 40 L80 50 L80 70" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx="35" cy="85" r="12" stroke="currentColor" strokeWidth="3" fill="none"/>
+            <circle cx="35" cy="85" r="4" fill="currentColor"/>
+            <circle cx="85" cy="85" r="12" stroke="currentColor" strokeWidth="3" fill="none"/>
+            <circle cx="85" cy="85" r="4" fill="currentColor"/>
+            <line x1="47" y1="85" x2="73" y2="85" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+            <line x1="60" y1="40" x2="60" y2="25" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="50" y1="25" x2="70" y2="25" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <rect x="52" y="50" width="16" height="10" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+          </svg>
         </div>
       </div>
 
-      <div className="container-responsive px-4 py-6 lg:grid lg:grid-cols-[1.5fr_1fr] lg:gap-8 lg:max-w-7xl lg:mx-auto">
-        {/* Hero Section - Left Column on Desktop */}
-        <div className="lg:col-span-1">
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 md:p-8 mb-6">
-            {/* Scooter Visual */}
-            <div className="flex justify-center items-center h-64 md:h-80 mb-6 bg-gradient-to-br from-ocean-darkest to-ocean-dark dark:from-gray-900 dark:to-gray-800 rounded-lg">
-              <img 
-                src="/scooter.png" 
-                alt="Hero Optima Electric Scooter" 
-                className="w-full h-full object-contain p-4"
-              />
-            </div>
+      {/* Range Display */}
+      <h1 className="text-text-light dark:text-text-dark tracking-tight text-5xl font-bold leading-tight px-4 text-center pb-3 pt-2">
+        {currentRange.toFixed(1)} km remaining
+      </h1>
 
-            {/* Range Display */}
-            <div className="text-center mb-6">
-              <div className="text-5xl md:text-6xl font-bold mb-2" style={{ color: rangeColor }}>
-                {currentRange.toFixed(1)} <span className="text-2xl md:text-3xl text-gray-500 dark:text-gray-400">km</span>
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">remaining</div>
-            </div>
+      {/* Progress Bar */}
+      <div className="flex flex-col gap-3 p-4 pt-6">
+        <div className="bg-border-light dark:bg-border-dark h-1">
+          <div className="h-1 bg-primary" style={{ width: `${rangePercentage}%` }}></div>
+        </div>
+      </div>
 
-            {/* Progress Bar */}
-            <div className="mb-2">
-              <div className="relative w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full transition-all duration-500"
-                  style={{ width: `${rangePercentage}%`, backgroundColor: rangeColor }}
-                />
-              </div>
-            </div>
-            <div className="text-center text-xs text-gray-500 dark:text-gray-400 mb-4">
-              of {settings.maxRange} km total
-            </div>
-
-            {/* Alert Banner */}
-            {rangeStatus !== 'good' && (
-              <div className={`p-3 rounded-lg flex items-start ${rangeStatus === 'critical' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-yellow-100 dark:bg-yellow-900/30'}`}>
-                <AlertTriangle className={rangeStatus === 'critical' ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'} size={20} />
-                <div className="ml-2 text-sm">
-                  <span className={`font-semibold ${rangeStatus === 'critical' ? 'text-red-900 dark:text-red-300' : 'text-yellow-900 dark:text-yellow-300'}`}>
-                    {rangeStatus === 'critical' ? '⚠ Critical Range' : '⚠ Low Range Alert'}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Action Buttons - Side by Side */}
-          <div className="grid grid-cols-2 gap-3 mb-6 relative">
-            <button
-              onClick={() => setShowOdometerModal(true)}
-              className="h-12 bg-primary dark:bg-ocean text-white rounded-lg font-medium text-[15px] hover:bg-primary-dark dark:hover:bg-ocean-dark transition"
-            >
-              Update Odometer
-            </button>
-            <button
-              onClick={() => setShowChargeModal(true)}
-              className="h-12 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-medium text-[15px] border-[1.5px] border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition"
-            >
-              Add Charge
-            </button>
-
-            {showTooltip && (
-              <div className="absolute -top-16 left-0 right-0 bg-gray-900 text-white p-3 rounded-lg shadow-xl z-10">
-                <p className="text-sm mb-2">👆 Tap here after your next trip to log distance</p>
-                <button onClick={dismissTooltip} className="text-xs text-green-400 font-semibold">
-                  Got it
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Recent Trips - Mobile */}
-          <div className="lg:hidden">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Trips</h2>
-              <button onClick={() => window.location.href = '/trips'} className="text-sm text-primary dark:text-ocean-light hover:text-primary-dark dark:hover:text-ocean">
-                View All →
-              </button>
-            </div>
-            {odometerEntries.length === 0 ? (
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
-                <p className="text-gray-500 dark:text-gray-400">No trips yet</p>
-                <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Update your odometer to start tracking</p>
-              </div>
-            ) : (
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700">
-                {[...odometerEntries].reverse().slice(0, 3).map(entry => (
-                  <div key={entry.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">{format(entry.timestamp, 'MMM d, h:mm a')}</span>
-                      <span className="text-lg font-semibold text-gray-900 dark:text-white">{entry.distanceTraveled.toFixed(1)} km</span>
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {(entry.reading - entry.distanceTraveled).toFixed(1)} → {entry.reading.toFixed(1)} km
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {entry.rangeBeforeTrip.toFixed(1)} → {entry.rangeAfterTrip.toFixed(1)} km range
-                    </div>
-                    {entry.notes && <div className="text-xs text-gray-600 italic mt-1">{entry.notes}</div>}
-                  </div>
-                ))}
-              </div>
-            )}
+      {/* Alert Banner */}
+      {rangeStatus !== 'good' && (
+        <div className={`mx-4 mb-4 p-4 border ${rangeStatus === 'critical' ? 'border-danger bg-red-50 dark:bg-red-900/20' : 'border-warning bg-yellow-50 dark:bg-yellow-900/20'}`}>
+          <div className="flex items-center justify-center">
+            <AlertTriangle className={rangeStatus === 'critical' ? 'text-danger' : 'text-warning'} size={20} />
+            <span className={`ml-3 font-semibold ${rangeStatus === 'critical' ? 'text-danger' : 'text-warning'}`}>
+              {rangeStatus === 'critical' ? 'Critical Range - Charge Now!' : 'Low Range Alert'}
+            </span>
           </div>
         </div>
+      )}
 
-        {/* Sidebar - Right Column on Desktop */}
-        <div className="lg:col-span-1">
-          {/* Stats Grid */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
-            <div className="grid grid-cols-3 lg:grid-cols-1 divide-x lg:divide-x-0 lg:divide-y divide-gray-200 dark:divide-gray-700">
-              <div className="p-4 text-center lg:text-left lg:flex lg:justify-between lg:items-center">
-                <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1 lg:mb-0">Odometer</span>
-                <div>
-                  <span className="text-xl font-semibold text-gray-900 dark:text-white">{currentOdometer.toFixed(1)}</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">km</span>
-                </div>
-              </div>
-              <div className="p-4 text-center lg:text-left lg:flex lg:justify-between lg:items-center">
-                <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1 lg:mb-0">Today</span>
-                <div>
-                  <span className="text-xl font-semibold text-gray-900 dark:text-white">{todayDistance.toFixed(1)}</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">{tripsToday} trips</span>
-                </div>
-              </div>
-              <div className="p-4 text-center lg:text-left lg:flex lg:justify-between lg:items-center">
-                <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1 lg:mb-0">Last Charge</span>
-                <div>
-                  <span className="text-xl font-semibold text-gray-900 dark:text-white">
-                    {lastCharge ? (daysSinceCharge === 0 ? 'Today' : `${daysSinceCharge}d ago`) : 'Never'}
-                  </span>
-                </div>
-              </div>
-              <div className="p-4 text-center lg:text-left lg:flex lg:justify-between lg:items-center col-span-3 lg:col-span-1">
-                <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1 lg:mb-0">Total Trips</span>
-                <div>
-                  <span className="text-xl font-semibold text-gray-900 dark:text-white">{odometerEntries.length}</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">all time</span>
-                </div>
-              </div>
-              <div className="p-4 text-center lg:text-left lg:flex lg:justify-between lg:items-center col-span-3 lg:col-span-1">
-                <span className="block text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1 lg:mb-0">Avg Trip</span>
-                <div>
-                  <span className="text-xl font-semibold text-gray-900 dark:text-white">
-                    {odometerEntries.length > 0 
-                      ? (odometerEntries.reduce((sum, e) => sum + e.distanceTraveled, 0) / odometerEntries.length).toFixed(1)
-                      : '0.0'}
-                  </span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">km</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Action Buttons */}
+      <div className="grid grid-cols-2 gap-4 px-4 py-4 relative">
+        <button
+          onClick={() => setShowOdometerModal(true)}
+          className="flex w-full items-center justify-center h-12 text-background-light dark:text-text-dark bg-primary text-sm font-bold leading-normal tracking-wide"
+        >
+          UPDATE ODOMETER
+        </button>
+        <button
+          onClick={() => setShowChargeModal(true)}
+          className="flex w-full items-center justify-center h-12 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-primary text-sm font-bold leading-normal tracking-wide"
+        >
+          ADD CHARGE
+        </button>
 
-          {/* Can I Make It Card */}
-          <div className="bg-ocean-lightest dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5">
-            <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">Can I Make It?</h3>
-            <button
-              onClick={() => setShowPredictorModal(true)}
-              className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-600 transition"
-            >
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Distance to destination</div>
-              <div className="text-2xl font-semibold text-gray-400 dark:text-gray-500">Enter distance...</div>
+        {showTooltip && (
+          <div className="absolute -top-16 left-0 right-0 bg-text-light dark:bg-text-dark text-background-light dark:text-background-dark p-3 shadow-xl z-10">
+            <p className="text-sm mb-2">👆 Tap here after your next trip to log distance</p>
+            <button onClick={dismissTooltip} className="text-xs text-primary font-semibold">
+              Got it
             </button>
           </div>
+        )}
+      </div>
 
-          {/* Desktop Recent Trips */}
-          <div className="hidden lg:block mt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Trips</h2>
-              <button onClick={() => window.location.href = '/trips'} className="text-sm text-blue-600 hover:text-blue-700">
-                View All →
-              </button>
-            </div>
-            {odometerEntries.length === 0 ? (
-              <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-                <p className="text-gray-500">No trips yet</p>
-              </div>
-            ) : (
-              <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-200">
-                {[...odometerEntries].reverse().slice(0, 3).map(entry => (
-                  <div key={entry.id} className="p-4 hover:bg-gray-50 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <span className="text-sm text-gray-600">{format(entry.timestamp, 'MMM d, h:mm a')}</span>
-                      <span className="text-lg font-semibold text-gray-900">{entry.distanceTraveled.toFixed(1)} km</span>
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {(entry.reading - entry.distanceTraveled).toFixed(1)} → {entry.reading.toFixed(1)} km
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {entry.rangeBeforeTrip.toFixed(1)} → {entry.rangeAfterTrip.toFixed(1)} km range
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+      {/* Stats Grid */}
+      <div className="p-4 mt-4">
+        <div className="grid grid-cols-2 border-t border-l border-border-light dark:border-border-dark">
+          <div className="flex flex-col items-center justify-center p-6 border-b border-r border-border-light dark:border-border-dark">
+            <p className="text-text-light dark:text-text-dark text-2xl font-bold tracking-tight">
+              {todayDistance.toFixed(1)} km
+            </p>
+            <p className="text-text-light/70 dark:text-text-dark/70 text-xs font-normal tracking-widest uppercase mt-1">
+              TRIP DISTANCE
+            </p>
+          </div>
+          <div className="flex flex-col items-center justify-center p-6 border-b border-r border-border-light dark:border-border-dark">
+            <p className="text-text-light dark:text-text-dark text-2xl font-bold tracking-tight">
+              {currentOdometer.toFixed(1)} km
+            </p>
+            <p className="text-text-light/70 dark:text-text-dark/70 text-xs font-normal tracking-widest uppercase mt-1">
+              ODOMETER
+            </p>
+          </div>
+          <div className="flex flex-col items-center justify-center p-6 border-b border-r border-border-light dark:border-border-dark">
+            <p className="text-text-light dark:text-text-dark text-2xl font-bold tracking-tight">
+              {tripsToday}
+            </p>
+            <p className="text-text-light/70 dark:text-text-dark/70 text-xs font-normal tracking-widest uppercase mt-1">
+              TRIPS TODAY
+            </p>
+          </div>
+          <div className="flex flex-col items-center justify-center p-6 border-b border-r border-border-light dark:border-border-dark">
+            <p className="text-text-light dark:text-text-dark text-2xl font-bold tracking-tight">
+              {rangePercentage.toFixed(0)}%
+            </p>
+            <p className="text-text-light/70 dark:text-text-dark/70 text-xs font-normal tracking-widest uppercase mt-1">
+              BATTERY
+            </p>
           </div>
         </div>
       </div>
 
+      {/* Modals */}
       {showOdometerModal && (
         <UpdateOdometerModal
           appData={appData}

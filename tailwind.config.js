@@ -8,26 +8,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: '#007EA7',
-          dark: '#003249',
-          light: '#80CED7',
-        },
-        secondary: {
-          DEFAULT: '#9AD1D4',
-          light: '#CCDBDC',
-        },
-        ocean: {
-          darkest: '#003249',
-          dark: '#007EA7',
-          DEFAULT: '#80CED7',
-          light: '#9AD1D4',
-          lightest: '#CCDBDC',
-        },
+        primary: '#007AFF',
+        'background-light': '#ffffff',
+        'background-dark': '#101922',
+        'text-light': '#1C1C1E',
+        'text-dark': '#f6f7f8',
+        'border-light': '#E5E5EA',
+        'border-dark': '#3a444d',
         warning: '#f59e0b',
         danger: '#ef4444',
         success: '#10b981',
-      }
+      },
+      fontFamily: {
+        display: ['Space Grotesk', 'sans-serif'],
+      },
+      borderRadius: {
+        DEFAULT: '0rem',
+        lg: '0rem',
+        xl: '0rem',
+        '2xl': '0rem',
+        full: '9999px',
+      },
     },
   },
   plugins: [],
