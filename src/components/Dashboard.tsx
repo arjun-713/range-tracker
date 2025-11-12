@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AppData } from '../types';
 import { getRangeStatus } from '../utils/calculations';
 import { requestNotificationPermission, checkAndNotifyLowRange } from '../utils/notifications';
@@ -19,7 +19,7 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
   const [showPredictorModal, setShowPredictorModal] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [lastNotificationRange, setLastNotificationRange] = useState<number | null>(null);
+  const lastNotificationRangeRef = useRef<number | null>(null);
 
   const { currentRange, currentOdometer, settings, odometerEntries } = appData;
   const rangeStatus = getRangeStatus(currentRange, settings.lowRangeThreshold, settings.criticalRangeThreshold);
@@ -39,15 +39,12 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
   // Check for low range and send notifications whenever range changes
   useEffect(() => {
     if (notificationsEnabled && currentRange > 0) {
-      const newLastNotificationRange = checkAndNotifyLowRange(
+      lastNotificationRangeRef.current = checkAndNotifyLowRange(
         currentRange,
         settings.lowRangeThreshold,
         settings.criticalRangeThreshold,
-        lastNotificationRange
+        lastNotificationRangeRef.current
       );
-      if (newLastNotificationRange !== lastNotificationRange) {
-        setLastNotificationRange(newLastNotificationRange);
-      }
     }
   }, [currentRange, notificationsEnabled, settings.lowRangeThreshold, settings.criticalRangeThreshold]);
 
