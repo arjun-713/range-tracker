@@ -48,16 +48,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Subscribe to scooter data changes
   useEffect(() => {
-    if (!scooterCode) return;
+    if (!scooterCode) {
+      console.log('⚠️ No scooter code, skipping listener setup');
+      return;
+    }
 
-    console.log('Setting up real-time listener for:', scooterCode);
+    console.log('🔵 Setting up real-time listener for:', scooterCode);
+    console.log('🔵 Database URL:', database.app.options.databaseURL);
     const scooterRef = ref(database, `scooters/${scooterCode}`);
 
     const unsubscribe = onValue(scooterRef, (snapshot) => {
-      console.log('Real-time update received:', snapshot.exists());
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`🟢 [${timestamp}] Real-time update received:`, snapshot.exists());
       const data = snapshot.val();
       if (data) {
-        console.log('Parsing real-time data...');
+        console.log('🟢 Data received:', {
+          currentRange: data.currentRange,
+          currentOdometer: data.currentOdometer,
+          entriesCount: data.odometerEntries?.length || 0,
+          chargesCount: data.chargeSessions?.length || 0,
+        });
         // Convert timestamps back to Date objects
         const parsedData = {
           ...data,
@@ -71,26 +81,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           })),
         };
         setAppData(parsedData);
-        console.log('App data updated from real-time sync');
+        console.log('✅ App data updated from real-time sync');
       } else {
-        console.log('No data exists, initializing...');
+        console.log('⚠️ No data exists, initializing...');
         // Initialize new scooter data
         set(scooterRef, defaultData).then(() => {
-          console.log('Default data written to Firebase');
+          console.log('✅ Default data written to Firebase');
           setAppData(defaultData);
         }).catch((error) => {
-          console.error('Error writing default data:', error);
+          console.error('❌ Error writing default data:', error);
         });
       }
       setLoading(false);
     }, (error) => {
-      console.error('Error in real-time listener:', error);
+      console.error('❌ Error in real-time listener:', error);
       setLoading(false);
     });
 
     // Cleanup listener on unmount or code change
     return () => {
-      console.log('Cleaning up real-time listener');
+      console.log('🔴 Cleaning up real-time listener for:', scooterCode);
       unsubscribe();
     };
   }, [scooterCode]);
@@ -139,18 +149,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updateAppData = async (updates: Partial<AppData>) => {
-    if (!scooterCode || !appData) return;
+    if (!scooterCode || !appData) {
+      console.log('⚠️ Cannot update: missing scooterCode or appData');
+      return;
+    }
 
     const newData = { ...appData, ...updates };
+    const timestamp = new Date().toLocaleTimeString();
+
+    // Clean data: remove undefined values (Firebase doesn't allow them)
+    const cleanData = JSON.parse(JSON.stringify(newData, (key, value) => {
+      return value === undefined ? null : value;
+    }));
 
     // Update Firebase - the real-time listener will automatically update local state
     const scooterRef = ref(database, `scooters/${scooterCode}`);
     try {
-      console.log('Updating Firebase with new data...');
-      await set(scooterRef, newData);
-      console.log('Firebase update successful - real-time sync will propagate to all devices');
+      console.log(`🔵 [${timestamp}] Updating Firebase...`);
+      console.log('🔵 New data:', {
+        currentRange: cleanData.currentRange,
+        currentOdometer: cleanData.currentOdometer,
+        entriesCount: cleanData.odometerEntries?.length || 0,
+      });
+      await set(scooterRef, cleanData);
+      console.log(`✅ [${timestamp}] Firebase update successful - waiting for real-time sync...`);
     } catch (error) {
-      console.error('Error updating Firebase:', error);
+      console.error('❌ Error updating Firebase:', error);
       // Fallback to local update if Firebase fails
       setAppData(newData as AppData);
     }
