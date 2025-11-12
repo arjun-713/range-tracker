@@ -36,8 +36,9 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
     }
   }, []);
 
+  // Check for low range and send notifications whenever range changes
   useEffect(() => {
-    if (notificationsEnabled) {
+    if (notificationsEnabled && currentRange > 0) {
       const newLastNotificationRange = checkAndNotifyLowRange(
         currentRange,
         settings.lowRangeThreshold,
@@ -48,7 +49,7 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
         setLastNotificationRange(newLastNotificationRange);
       }
     }
-  }, [currentRange, settings.lowRangeThreshold, settings.criticalRangeThreshold, notificationsEnabled, lastNotificationRange]);
+  }, [currentRange, notificationsEnabled]);
 
   useEffect(() => {
     const hasSeenTooltip = localStorage.getItem('daxit_tooltip_seen');
@@ -116,7 +117,7 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
       {/* Progress Bar */}
       <div className="flex flex-col gap-3 p-4 pt-6">
         <div className="bg-border-light dark:bg-border-dark h-1">
-          <div className="h-1 bg-accent" style={{ width: `${rangePercentage}%` }}></div>
+          <div className="h-1 bg-[#007AFF]" style={{ width: `${rangePercentage}%` }}></div>
         </div>
       </div>
 
@@ -136,13 +137,13 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
       <div className="grid grid-cols-2 gap-4 px-4 py-4 relative">
         <button
           onClick={() => setShowOdometerModal(true)}
-          className="flex w-full items-center justify-center h-12 text-white bg-accent text-sm font-bold leading-normal tracking-wide shadow-sm"
+          className="flex w-full items-center justify-center h-12 text-white bg-[#007AFF] text-sm font-bold leading-normal tracking-wide"
         >
           UPDATE ODOMETER
         </button>
         <button
           onClick={() => setShowChargeModal(true)}
-          className="flex w-full items-center justify-center h-12 bg-white dark:bg-background-dark border-2 border-border-light dark:border-border-dark text-accent text-sm font-bold leading-normal tracking-wide"
+          className="flex w-full items-center justify-center h-12 bg-white dark:bg-background-dark border-2 border-border-light dark:border-border-dark text-[#007AFF] text-sm font-bold leading-normal tracking-wide"
         >
           ADD CHARGE
         </button>
@@ -150,7 +151,7 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
         {showTooltip && (
           <div className="absolute -top-16 left-0 right-0 bg-text-light dark:bg-text-dark text-background-light dark:text-background-dark p-3 shadow-xl z-10">
             <p className="text-sm mb-2">👆 Tap here after your next trip to log distance</p>
-            <button onClick={dismissTooltip} className="text-xs text-primary font-semibold">
+            <button onClick={dismissTooltip} className="text-xs text-[#007AFF] font-semibold">
               Got it
             </button>
           </div>

@@ -85,7 +85,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
                   checked={darkMode}
                   onChange={toggleDarkMode}
                 />
-                <div className="peer h-7 w-12 rounded-full bg-gray-200 after:absolute after:start-[4px] after:top-[4px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+                <div className="peer h-7 w-12 rounded-full bg-gray-300 dark:bg-gray-600 after:absolute after:start-[4px] after:top-[4px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-[#007AFF] peer-checked:after:translate-x-full peer-focus:outline-none"></div>
               </label>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
                 onClick={copyCode}
                 className="flex h-10 flex-1 items-center justify-center border border-border-light dark:border-border-dark"
               >
-                <span className="text-base font-medium text-primary">
+                <span className="text-base font-medium text-[#007AFF]">
                   {codeCopied ? 'Copied!' : 'Copy'}
                 </span>
               </button>
@@ -119,7 +119,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
                 onClick={() => setShowLogoutConfirm(true)}
                 className="flex h-10 flex-1 items-center justify-center border border-border-light dark:border-border-dark"
               >
-                <span className="text-base font-medium text-primary">Switch Scooter</span>
+                <span className="text-base font-medium text-[#007AFF]">Switch Scooter</span>
               </button>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
               Maximum Range (km)
             </p>
             <input
-              className="border border-border-light dark:border-border-dark bg-white dark:bg-[#1a2732] text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-primary"
+              className="border border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-[#007AFF]"
               type="number"
               value={settings.maxRange}
               onChange={(e) => handleSettingChange('maxRange', parseFloat(e.target.value))}
@@ -169,7 +169,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
               Full Charge Duration (hours)
             </p>
             <input
-              className="border border-border-light dark:border-border-dark bg-white dark:bg-[#1a2732] text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-primary"
+              className="border border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-[#007AFF]"
               type="number"
               value={settings.fullChargeDuration}
               onChange={(e) => handleSettingChange('fullChargeDuration', parseFloat(e.target.value))}
@@ -191,7 +191,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
               <div className="shrink-0">
                 <label className="relative inline-flex cursor-pointer items-center">
                   <input className="peer sr-only" type="checkbox" />
-                  <div className="peer h-7 w-12 rounded-full bg-gray-200 after:absolute after:start-[4px] after:top-[4px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+                  <div className="peer h-7 w-12 rounded-full bg-gray-300 dark:bg-gray-600 after:absolute after:start-[4px] after:top-[4px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-[#007AFF] peer-checked:after:translate-x-full peer-focus:outline-none"></div>
                 </label>
               </div>
             </div>
@@ -205,7 +205,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
                 Low Range Alert (km)
               </p>
               <input
-                className="border border-border-light dark:border-border-dark bg-white dark:bg-[#1a2732] text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-primary"
+                className="border border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-[#007AFF]"
                 type="number"
                 value={settings.lowRangeThreshold}
                 onChange={(e) => handleSettingChange('lowRangeThreshold', parseFloat(e.target.value))}
@@ -221,7 +221,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
                 Critical Range Alert (km)
               </p>
               <input
-                className="border border-border-light dark:border-border-dark bg-white dark:bg-[#1a2732] text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-primary"
+                className="border border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark text-right p-2 w-16 focus:outline-2 focus:outline-[#007AFF]"
                 type="number"
                 value={settings.criticalRangeThreshold}
                 onChange={(e) => handleSettingChange('criticalRangeThreshold', parseFloat(e.target.value))}
@@ -312,7 +312,7 @@ export default function Settings({ appData, updateData }: SettingsProps) {
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 bg-primary text-white py-3 font-semibold"
+                className="flex-1 bg-[#007AFF] text-white py-3 font-semibold"
               >
                 Switch
               </button>

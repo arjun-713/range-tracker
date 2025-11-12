@@ -111,7 +111,7 @@ export default function UpdateOdometerModal({ appData, updateData, onClose }: Up
 
         <button
           onClick={handleSubmit}
-          className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition"
+          className="w-full bg-[#007AFF] text-white py-3 rounded-lg font-semibold hover:bg-[#0051D5] transition"
         >
           Update
         </button>

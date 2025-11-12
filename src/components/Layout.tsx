@@ -27,8 +27,8 @@ export default function Layout() {
                 to={path}
                 className={`flex flex-col items-center gap-1 flex-1 transition ${
                   isActive 
-                    ? 'text-primary' 
-                    : 'text-text-secondary-light dark:text-text-secondary-dark hover:text-primary'
+                    ? 'text-[#007AFF]' 
+                    : 'text-text-secondary-light dark:text-text-secondary-dark hover:text-[#007AFF]'
                 }`}
               >
                 <Icon size={24} />

@@ -81,14 +81,14 @@ export default function AddChargeModal({ appData, updateData, onClose }: AddChar
           <button
             onClick={() => setChargeType('full')}
             className={`w-full p-4 border-2 rounded-lg text-left transition ${
-              chargeType === 'full' ? 'border-primary bg-green-50' : 'border-gray-200'
+              chargeType === 'full' ? 'border-[#007AFF] bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700'
             }`}
           >
             <div className="flex items-center">
               <span className="text-2xl mr-3">🔋</span>
               <div>
                 <div className="font-semibold">Full Charge</div>
-                <div className="text-sm text-gray-600">Reset to {appData.settings.maxRange} km</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Reset to {appData.settings.maxRange} km</div>
               </div>
             </div>
           </button>
@@ -96,7 +96,7 @@ export default function AddChargeModal({ appData, updateData, onClose }: AddChar
           <button
             onClick={() => setChargeType('partial')}
             className={`w-full p-4 border-2 rounded-lg text-left transition ${
-              chargeType === 'partial' ? 'border-primary bg-green-50' : 'border-gray-200'
+              chargeType === 'partial' ? 'border-[#007AFF] bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700'
             }`}
           >
             <div className="flex items-center">
@@ -138,7 +138,7 @@ export default function AddChargeModal({ appData, updateData, onClose }: AddChar
         <button
           onClick={handleSubmit}
           disabled={chargeType === 'partial' && (!duration || parseFloat(duration) <= 0)}
-          className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="w-full bg-[#007AFF] text-white py-3 rounded-lg font-semibold hover:bg-[#0051D5] transition disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           Add Charge
         </button>
