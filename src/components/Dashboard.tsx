@@ -49,7 +49,7 @@ export default function Dashboard({ appData, updateData }: DashboardProps) {
         setLastNotificationRange(newLastNotificationRange);
       }
     }
-  }, [currentRange, notificationsEnabled]);
+  }, [currentRange, notificationsEnabled, settings.lowRangeThreshold, settings.criticalRangeThreshold, lastNotificationRange]);
 
   useEffect(() => {
     const hasSeenTooltip = localStorage.getItem('daxit_tooltip_seen');

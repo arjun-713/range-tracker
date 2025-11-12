@@ -50,17 +50,17 @@ export default function UpdateOdometerModal({ appData, updateData, onClose }: Up
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">Update Odometer</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Update Odometer</h2>
+          <button onClick={onClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
             <X size={24} />
           </button>
         </div>
 
-        <div className="mb-4 p-3 bg-gray-100 rounded-lg">
-          <div className="text-sm text-gray-600">Current Odometer</div>
-          <div className="text-2xl font-bold text-gray-900">{appData.currentOdometer.toFixed(1)} km</div>
+        <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+          <div className="text-sm text-gray-600 dark:text-gray-400">Current Odometer</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white">{appData.currentOdometer.toFixed(1)} km</div>
         </div>
 
         <label className="block mb-4">
@@ -97,13 +97,13 @@ export default function UpdateOdometerModal({ appData, updateData, onClose }: Up
         )}
 
         {reading && parseFloat(reading) >= appData.currentOdometer && (
-          <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-            <div className="text-sm text-gray-600">Distance Traveled</div>
-            <div className="text-xl font-bold text-blue-600">
+          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <div className="text-sm text-gray-600 dark:text-gray-400">Distance Traveled</div>
+            <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
               {(parseFloat(reading) - appData.currentOdometer).toFixed(1)} km
             </div>
-            <div className="text-sm text-gray-600 mt-2">New Range</div>
-            <div className="text-xl font-bold text-gray-900">
+            <div className="text-sm text-gray-600 dark:text-gray-400 mt-2">New Range</div>
+            <div className="text-xl font-bold text-gray-900 dark:text-white">
               {Math.max(0, appData.currentRange - (parseFloat(reading) - appData.currentOdometer)).toFixed(1)} km
             </div>
           </div>
