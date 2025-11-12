@@ -190,7 +190,6 @@ export default function ChargingHistory({ appData, updateData }: ChargingHistory
                 </div>
               );
             })
-          )
           )}
         </div>
       </div>
