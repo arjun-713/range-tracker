@@ -70,6 +70,21 @@ export default function ChargingHistory({ appData, updateData }: ChargingHistory
     return `${h}h ${m}m ${s}s`;
   };
 
+  const formatDuration = (hours: number) => {
+    const totalMinutes = Math.floor(hours * 60);
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    
+    if (h > 0) {
+      return `${h}h ${m}m`;
+    } else if (m > 0) {
+      return `${m}m`;
+    } else {
+      const s = Math.floor(hours * 3600);
+      return `${s}s`;
+    }
+  };
+
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
       <div className="flex-1 pb-24">
@@ -148,28 +163,34 @@ export default function ChargingHistory({ appData, updateData }: ChargingHistory
               </p>
             </div>
           ) : (
-            sessions.map(session => (
-              <div 
-                key={session.id} 
-                className="flex items-center justify-between border-b border-border-light dark:border-border-dark py-4"
-              >
-                <div className="flex flex-col">
-                  <p className="text-base font-medium text-text-primary-light dark:text-text-primary-dark">
-                    {format(session.timestamp, 'MMMM dd, yyyy')}
-                  </p>
-                  <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                    {session.type === 'full' 
-                      ? 'Full charge' 
-                      : `${session.duration}h ${((session.duration! % 1) * 60).toFixed(0)}m`}
-                  </p>
+            sessions.map(session => {
+              const beforePercent = ((session.rangeBeforeCharge / appData.settings.maxRange) * 100).toFixed(0);
+              const afterPercent = ((session.rangeAfterCharge / appData.settings.maxRange) * 100).toFixed(0);
+              
+              return (
+                <div 
+                  key={session.id} 
+                  className="flex items-center justify-between border-b border-border-light dark:border-border-dark py-4"
+                >
+                  <div className="flex flex-col">
+                    <p className="text-base font-medium text-text-primary-light dark:text-text-primary-dark">
+                      {format(session.timestamp, 'MMMM dd, yyyy')}
+                    </p>
+                    <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                      {session.type === 'full' 
+                        ? 'Full charge' 
+                        : formatDuration(session.duration!)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 text-base font-medium text-text-primary-light dark:text-text-primary-dark">
+                    <span>{beforePercent}%</span>
+                    <ArrowRight size={16} className="text-text-secondary-light dark:text-text-secondary-dark" />
+                    <span>{afterPercent}%</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 text-base font-medium text-text-primary-light dark:text-text-primary-dark">
-                  <span>{session.rangeBeforeCharge.toFixed(0)}%</span>
-                  <ArrowRight size={16} className="text-text-secondary-light dark:text-text-secondary-dark" />
-                  <span>{((session.rangeAfterCharge / appData.settings.maxRange) * 100).toFixed(0)}%</span>
-                </div>
-              </div>
-            ))
+              );
+            })
+          )
           )}
         </div>
       </div>
