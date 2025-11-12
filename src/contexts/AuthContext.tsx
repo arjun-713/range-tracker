@@ -136,14 +136,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updateAppData = async (updates: Partial<AppData>) => {
-    if (!scooterCode) return;
+    if (!scooterCode || !appData) return;
 
     const newData = { ...appData, ...updates };
-    setAppData(newData as AppData);
 
-    // Update Firebase
+    // Update Firebase first - the onValue listener will update local state
     const scooterRef = ref(database, `scooters/${scooterCode}`);
-    await set(scooterRef, newData);
+    try {
+      await set(scooterRef, newData);
+      console.log('Data updated in Firebase successfully');
+    } catch (error) {
+      console.error('Error updating Firebase:', error);
+      // Fallback to local update if Firebase fails
+      setAppData(newData as AppData);
+    }
   };
 
   const logout = () => {
