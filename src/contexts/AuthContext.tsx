@@ -46,32 +46,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [appData, setAppData] = useState<AppData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Subscribe to scooter data changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      
-      // Check for stored scooter code
-      const storedCode = localStorage.getItem('scooter_code');
-      if (storedCode && user) {
-        setScooterCode(storedCode);
-        subscribeToScooterData(storedCode);
-      } else {
-        setLoading(false);
-      }
-    });
+    if (!scooterCode) return;
 
-    return unsubscribe;
-  }, []);
-
-  const subscribeToScooterData = (code: string) => {
-    console.log('Subscribing to scooter data:', code);
-    const scooterRef = ref(database, `scooters/${code}`);
+    console.log('Setting up real-time listener for:', scooterCode);
+    const scooterRef = ref(database, `scooters/${scooterCode}`);
     
-    onValue(scooterRef, (snapshot) => {
-      console.log('Received data from Firebase:', snapshot.exists());
+    const unsubscribe = onValue(scooterRef, (snapshot) => {
+      console.log('Real-time update received:', snapshot.exists());
       const data = snapshot.val();
       if (data) {
-        console.log('Data exists, parsing...');
+        console.log('Parsing real-time data...');
         // Convert timestamps back to Date objects
         const parsedData = {
           ...data,
@@ -85,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           })),
         };
         setAppData(parsedData);
-        console.log('App data set successfully');
+        console.log('App data updated from real-time sync');
       } else {
         console.log('No data exists, initializing...');
         // Initialize new scooter data
@@ -98,12 +84,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setLoading(false);
     }, (error) => {
-      console.error('Error reading from Firebase:', error);
+      console.error('Error in real-time listener:', error);
       setLoading(false);
     });
 
-    return () => off(scooterRef);
-  };
+    // Cleanup listener on unmount or code change
+    return () => {
+      console.log('Cleaning up real-time listener');
+      unsubscribe();
+    };
+  }, [scooterCode]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      
+      // Check for stored scooter code
+      const storedCode = localStorage.getItem('scooter_code');
+      if (storedCode && user) {
+        setScooterCode(storedCode);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   const loginWithCode = async (code: string) => {
     try {
@@ -119,13 +125,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('Signed in successfully:', currentUser.uid);
       }
 
-      // Store the scooter code
+      // Store the scooter code - this will trigger the useEffect to subscribe
       localStorage.setItem('scooter_code', code);
       setScooterCode(code);
       console.log('Scooter code stored:', code);
-
-      // Subscribe to scooter data
-      subscribeToScooterData(code);
     } catch (error: any) {
       console.error('Login error:', error);
       console.error('Error code:', error.code);
@@ -140,11 +143,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const newData = { ...appData, ...updates };
 
-    // Update Firebase first - the onValue listener will update local state
+    // Update Firebase - the real-time listener will automatically update local state
     const scooterRef = ref(database, `scooters/${scooterCode}`);
     try {
+      console.log('Updating Firebase with new data...');
       await set(scooterRef, newData);
-      console.log('Data updated in Firebase successfully');
+      console.log('Firebase update successful - real-time sync will propagate to all devices');
     } catch (error) {
       console.error('Error updating Firebase:', error);
       // Fallback to local update if Firebase fails
